@@ -66,18 +66,43 @@ For this test task, Python ingestion with Iceberg `MERGE` and full dbt rebuilds 
 # Set up Python
 pyenv install 3.12.16
 pyenv local 3.12.16
+
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
 # Start infrastructure
 docker compose up -d
+```
 
-# Generate and load data
+Wait until MinIO, Iceberg REST and Trino services are running.
+
+### Initialize MinIO storage
+
+1. Open [http://localhost:9001](http://localhost:9001).
+2. Log in using:
+   - Username: `minioadmin`
+   - Password: `minioadmin123`
+3. Open **Buckets** and create a bucket named `warehouse` if it does not already exist.
+
+### Initialize Iceberg tables
+
+From the project root, run:
+
+```bash
+python data_generator/init_tables.py
+```
+
+### Generate and load data
+
+```bash
 python data_generator/generate_data.py
 python data_generator/load_data.py
+```
 
-# Build and test dbt models
+### Build and test dbt models
+
+```bash
 cd dbt
 dbt debug
 dbt build
@@ -85,8 +110,8 @@ dbt build
 
 **Local services:**
 
-- Trino: http://localhost:8080
-- MinIO: http://localhost:9001
+- Trino: [http://localhost:8080](http://localhost:8080)
+- MinIO Console: [http://localhost:9001](http://localhost:9001)
 
 ## Verification
 
