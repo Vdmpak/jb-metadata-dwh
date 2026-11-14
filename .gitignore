@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Generated synthetic data
+data_generator/output/
+
+# dbt generated files
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+
+# Local Iceberg catalog
+iceberg_catalog/
+
+# Environment and secrets
+.env
+.DS_Store
+
+# Runtime logs
+logs/

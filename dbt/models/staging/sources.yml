@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: jetbrains_meta
+    description: Raw Trino query metadata stored in Iceberg.
+    database: iceberg
+    schema: jetbrains_meta
+
+    tables:
+      - name: raw_query_events
+        description: One record per Trino query execution.
+
+      - name: raw_users
+        description: User-to-team mapping.
+
+      - name: raw_tables
+        description: Reference list of warehouse tables.

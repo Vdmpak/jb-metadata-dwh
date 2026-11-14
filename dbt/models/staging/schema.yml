@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: stg_query_events
+    description: Cleaned Trino query execution events.
+    columns:
+      - name: query_id
+        description: Unique identifier for each query execution.
+        tests:
+          - unique
+          - not_null
+
+      - name: user_name
+        description: Trino username that submitted the query.
+        tests:
+          - not_null
+
+      - name: query_state
+        description: Final state of the query execution.
+
+  - name: stg_users
+    description: Cleaned mapping between users and teams.
+    columns:
+      - name: user_name
+        description: Trino username.
+        tests:
+          - unique
+          - not_null
+
+      - name: team_name
+        description: Team associated with the user.
+        tests:
+          - not_null
+
+  - name: stg_tables
+    description: Reference list of warehouse tables.
+    columns:
+      - name: table_name
+        description: Fully qualified warehouse table name.
+        tests:
+          - unique
+          - not_null

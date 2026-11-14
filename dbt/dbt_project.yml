@@ -1,0 +1,30 @@
+name: 'jetbrains_meta_dwh'
+version: '1.0.0'
+config-version: 2
+
+profile: 'jetbrains_meta_dwh'
+
+require-dbt-version: [">=1.8.0", "<2.0.0"]
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  jetbrains_meta_dwh:
+
+    staging:
+      +materialized: view
+
+    core:
+      +materialized: table
+
+    reporting:
+      +materialized: table

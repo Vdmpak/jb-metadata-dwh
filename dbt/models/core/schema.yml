@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: queries
+    description: One row per Trino query execution.
+    columns:
+      - name: query_id
+        description: Unique query execution identifier.
+        tests:
+          - unique
+          - not_null
+      - name: user_name
+        tests:
+          - not_null
+
+  - name: users
+    description: One row per Trino user.
+    columns:
+      - name: user_name
+        tests:
+          - unique
+          - not_null
+      - name: team_name
+        tests:
+          - not_null
+
+  - name: teams
+    description: One row per team.
+    columns:
+      - name: team_name
+        tests:
+          - unique
+          - not_null
+
+  - name: tables
+    description: One row per warehouse table.
+    columns:
+      - name: table_name
+        tests:
+          - unique
+          - not_null
+
+  - name: query_table_accesses
+    description: One row per query and accessed table.
+    columns:
+      - name: query_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('queries')
+                field: query_id
+      - name: table_name
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('tables')
+                field: table_name
+      - name: access_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['READ']

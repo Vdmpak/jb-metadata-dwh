@@ -1,0 +1,122 @@
+version: 2
+
+models:
+  - name: dim_user
+    description: One row per Trino user, associated with their team.
+    columns:
+      - name: user_name
+        description: Trino username.
+        tests:
+          - unique
+          - not_null
+
+      - name: team_name
+        description: Team associated with the user.
+        tests:
+          - not_null
+
+  - name: dim_team
+    description: One row per team.
+    columns:
+      - name: team_name
+        description: Unique team name.
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_table
+    description: One row per warehouse table.
+    columns:
+      - name: table_name
+        description: Fully qualified warehouse table name.
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_queries
+    description: One row per Trino query execution, including resource metrics.
+    columns:
+      - name: query_id
+        description: Unique query execution identifier.
+        tests:
+          - unique
+          - not_null
+
+      - name: user_name
+        tests:
+          - not_null
+
+      - name: query_date
+        tests:
+          - not_null
+
+      - name: execution_time_ms
+        tests:
+          - not_null
+
+  - name: bridge_query_table_accesses
+    description: One row per query and accessed table.
+    columns:
+      - name: query_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_queries')
+                field: query_id
+
+      - name: table_name
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_table')
+                field: table_name
+
+      - name: access_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['READ']
+
+  - name: fct_table_usage_daily
+    description: Daily query and distinct-user activity for each warehouse table.
+    columns:
+      - name: table_name
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_table')
+                field: table_name
+
+      - name: query_date
+        tests:
+          - not_null
+
+      - name: distinct_users
+        tests:
+          - not_null
+
+  - name: fct_team_resource_usage_daily
+    description: Daily query resource consumption aggregated by team.
+    columns:
+      - name: team_name
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_team')
+                field: team_name
+
+      - name: query_date
+        tests:
+          - not_null
+
+      - name: query_count
+        tests:
+          - not_null
+
+      - name: total_cpu_time_ms
+        tests:
+          - not_null
